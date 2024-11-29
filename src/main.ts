@@ -4,7 +4,6 @@ import { DataSource } from 'typeorm';
 import { AppModule } from './app.module';
 import { Todo } from './todos/todo.entity';
 import { User } from './user/user.entity';
-import cookieParser from 'cookie-parser';
 import * as passport from 'passport';
 export const PostgresDataSource = new DataSource({
   type: 'postgres',
@@ -13,7 +12,6 @@ export const PostgresDataSource = new DataSource({
   username: 'binh2',
   password: '212002',
   database: 'demo',
-  logging: ['query', 'error'],
   entities: [Todo, User],
   synchronize: true,
   // maxQueryExecutionTime: 1000,performance issues

@@ -14,7 +14,9 @@ import { UserForm, UserFormInterface } from './user.form';
 import * as session from 'express-session';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
-
+import { LocalAuthGuard } from 'src/auth/LocalAuthGuard';
+import { AuthenticatedGuard } from 'src/auth/AuthenticatedGuard';
+import * as bcrypt from 'bcrypt';
 @Controller('/user')
 export class USerController {
   private readonly repo = PostgresDataSource.getRepository(User);
@@ -23,23 +25,20 @@ export class USerController {
   @Post('/create')
   async create(@Body() form: UserForm): Promise<User> {
     let user = UserForm.mapToEntity(form);
+    const passwordHash = await bcrypt.hashSync(form.password, 10);
+    user.password = passwordHash;
     const result = await this.repo.save(user);
     return result;
   }
-
+  @UseGuards(LocalAuthGuard)
   @Post('/login')
-  async login(@Body() form: UserForm): Promise<any> {
-    const { username, password } = form;
+  async login(@Req() req: Request): Promise<any> {
+    return req.user;
+  }
 
-    const user = await this.repo.findOneBy({
-      username,
-      password,
-    });
-
-    if (!user) {
-      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
-    }
-
-    return user;
+  @UseGuards(AuthenticatedGuard)
+  @Post('/test')
+  async test(@Req() req: Request): Promise<any> {
+    return 'req.user';
   }
 }

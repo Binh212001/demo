@@ -9,7 +9,12 @@ export class UsersService {
   async findByUsername(username: string, password: string) {
     const user = await this.repo.findOneBy({
       username,
-      password,
+    });
+    return user;
+  }
+  async insertUser(username: string, password: string) {
+    const user = await this.repo.findOneBy({
+      username,
     });
     return user;
   }

@@ -5,7 +5,9 @@ import {
   AfterLoad,
   EventSubscriber,
   Unique,
+  AfterInsert,
 } from 'typeorm';
+import { Role } from './Role';
 
 @Entity()
 export class User {
